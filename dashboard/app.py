@@ -10,7 +10,8 @@ st.set_page_config(page_title="Blockchain Incident Dashboard",
 def load_data():
     df = pd.read_csv("data/master.csv")
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
-    df = df[df["source_file"] != "master"]  # ← ADD THIS
+    df = df[df["source_file"] != "master"]
+    df = df.reset_index(drop=True)  # ← ADD THIS
     return df
 
 
@@ -128,7 +129,8 @@ st.dataframe(
               "type_of_malicious_activity", "theme_tags"]]
     .rename(columns={"source_file": "blockchain",
                      "type_of_malicious_activity": "attack_type"})
-    .sort_values("date", ascending=False),
+    .sort_values("date", ascending=False)
+    .reset_index(drop=True),  # ← ADD THIS LINE
     use_container_width=True
 )
 
