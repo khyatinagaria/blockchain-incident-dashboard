@@ -17,7 +17,7 @@ df = load_data()
 
 # ── HEADER ──────────────────────────────────────────────
 st.title("🔐 Blockchain Security Incident Tracker")
-st.caption("Source: web3isgoinggreat.com | Auto-updated via GitHub Actions")
+
 
 # ── KPI CARDS ───────────────────────────────────────────
 col1, col2, col3, col4 = st.columns(4)
