@@ -4,7 +4,7 @@ import os
 
 
 def merge_all():
-    files = glob.glob("data/*.csv")
+    files = [f for f in glob.glob("data/*.csv") if "master" not in f]
     dfs = []
     for f in files:
         blockchain_name = os.path.basename(f).replace(".csv", "")
@@ -20,4 +20,3 @@ def merge_all():
 
 if __name__ == "__main__":
     merge_all()
-

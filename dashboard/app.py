@@ -10,6 +10,7 @@ st.set_page_config(page_title="Blockchain Incident Dashboard",
 def load_data():
     df = pd.read_csv("data/master.csv")
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df[df["source_file"] != "master"]  # ← ADD THIS
     return df
 
 
@@ -36,6 +37,7 @@ bc_counts = (df.groupby("source_file")
                .size()
                .reset_index(name="count")
                .sort_values("count", ascending=False))
+bc_counts = bc_counts[bc_counts["source_file"] != "master"]
 fig1 = px.bar(bc_counts, x="source_file", y="count",
               color="count", color_continuous_scale="Blues",
               text="count", labels={"source_file": "Blockchain", "count": "Incidents"})
