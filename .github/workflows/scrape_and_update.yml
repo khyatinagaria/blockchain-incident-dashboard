@@ -1,0 +1,56 @@
+name: Daily Scrape & Update
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install playwright beautifulsoup4 nest_asyncio pandas
+          playwright install chromium
+          playwright install-deps chromium
+
+      - name: Run all scrapers
+        run: |
+          python scrapers/scrape_bitcoin.py
+          python scrapers/scrape_ethereum.py
+          python scrapers/scrape_bnb_chain.py
+          python scrapers/scrape_solana.py
+          python scrapers/scrape_polygon.py
+          python scrapers/scrape_avalanche.py
+          python scrapers/scrape_terra.py
+          python scrapers/scrape_fantom.py
+          python scrapers/scrape_cosmos.py
+          python scrapers/scrape_tron.py
+          python scrapers/scrape_monero.py
+          python scrapers/scrape_celo.py
+          python scrapers/scrape_cardano.py
+          python scrapers/scrape_xrp_ledger.py
+          python scrapers/scrape_litecoin.py
+          python scrapers/scrape_sui.py
+          python scrapers/scrape_hyperliquid.py
+          python scrapers/scrape_flow.py
+          python scrapers/scrape_wax.py
+          python scrapers/scrape_tezos.py
+
+      - name: Merge CSVs
+        run: python pipeline/merge_data.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "Auto-update: $(date -u '+%Y-%m-%d')"
+          git push
