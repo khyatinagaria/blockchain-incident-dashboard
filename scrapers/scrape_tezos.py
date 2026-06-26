@@ -59,7 +59,7 @@ def classify_attack_type(title, description, theme_tags):
         if re.search(pattern, text):
             return label
     if "hack or scam" in theme_tags.lower():
-        return "Unclear from text \u2014 review manually"
+        return "Hack"
     return ""
 
 

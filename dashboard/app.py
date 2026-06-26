@@ -11,7 +11,12 @@ def load_data():
     df = pd.read_csv("data/master.csv")
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df = df[df["source_file"] != "master"]
-    df = df.reset_index(drop=True)  # ← ADD THIS
+    df = df.reset_index(drop=True)
+    df["type_of_malicious_activity"] = df["type_of_malicious_activity"].fillna(
+        "Non-security incident")
+    df["type_of_malicious_activity"] = df["type_of_malicious_activity"].replace(
+        "Unclear from text \u2014 review manually", "Hack"  # ← ADD THIS
+    )
     return df
 
 
