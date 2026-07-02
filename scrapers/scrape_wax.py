@@ -266,17 +266,19 @@ def parse_entry(entry_div):
     theme_tags, blockchain_tag, tech = parse_footer_tags(footer)
 
     return {
-        "date":                       date_obj.isoformat() if date_obj else "",
-        "title":                      title,
-        "theme_tags":                 theme_tags,
-        "type_of_malicious_activity": classify_attack_type(title, description, theme_tags),
-        "blockchain":                 blockchain_tag,
-        "tech":                       tech,
-        "description":                description,
-        "links":                      links,
-        "image_link":                 image_link,
-        "article_url":                article_url,
-        "extraction_timestamp":       datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "date_of_report":              date_obj.isoformat() if date_obj else "",
+        "report_title":                title,
+        "overall_theme_tags":          theme_tags,
+        "scam_category":               classify_attack_type(title, description, theme_tags),
+        "blockchain":                  blockchain,
+        # new function
+        "blockchain_id":               get_blockchain_id(blockchain),
+        "technology_used":             tech,
+        "report_description":          description,
+        "report_related_links":        links,
+        "report_related_image_link":   image_link,
+        "report_url":                  article_url,
+        "report_extraction_timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     }
 
 
@@ -370,9 +372,10 @@ def main():
 
     output_file = "wax.csv"
     fieldnames = [
-        "date", "title", "theme_tags", "type_of_malicious_activity",
-        "blockchain", "tech", "description", "links", "image_link",
-        "article_url", "extraction_timestamp",
+        "date_of_report", "report_title", "overall_theme_tags", "scam_category",
+        "blockchain", "blockchain_id", "technology_used", "report_description",
+        "report_related_links", "report_related_image_link", "report_url",
+        "report_extraction_timestamp",
     ]
     with open(output_file, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
@@ -387,6 +390,42 @@ def main():
         print(f"    theme_tags: {r['theme_tags']}")
         print(f"    image_link: {r['image_link']}")
         print(f"    links: {r['links'][:100]}")
+
+
+BLOCKCHAIN_IDS = {
+    "Ethereum": 1,
+    "Bitcoin": 0,        # Bitcoin doesn't have EVM chain ID, use 0
+    "BNB Chain": 56,
+    "Polygon": 137,
+    "Avalanche": 43114,
+    "Solana": None,      # Not EVM, no chain ID
+    "Fantom": 250,
+    "Arbitrum": 42161,
+    "Optimism": 10,
+    "Tron": 728126428,
+    "Cosmos": None,
+    "Terra": None,
+    "Cardano": None,
+    "Monero": None,
+    "Litecoin": None,
+    "XRP Ledger": None,
+    "Tezos": None,
+    "Flow": None,
+    "WAX": None,
+    "Celo": 42220,
+    "Sui": None,
+    "Hyperliquid": None,
+}
+
+
+def get_blockchain_id(blockchain_str):
+    """Return JSON array of chain IDs for all blockchains mentioned."""
+    if not blockchain_str:
+        return "[]"
+    chains = [b.strip() for b in blockchain_str.split(",")]
+    ids = [BLOCKCHAIN_IDS.get(c)
+           for c in chains if BLOCKCHAIN_IDS.get(c) is not None]
+    return json.dumps(ids)
 
 
 main()
