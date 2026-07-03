@@ -17,7 +17,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install playwright beautifulsoup4 nest_asyncio pandas
+          pip install playwright beautifulsoup4 nest_asyncio pandas requests
           playwright install chromium
           playwright install-deps chromium
 
@@ -46,6 +46,15 @@ jobs:
 
       - name: Merge CSVs
         run: python pipeline/merge_data.py
+
+      - name: Rebuild database
+        run: python pipeline/create_database.py
+
+      - name: Fill blockchain IDs
+        run: python pipeline/fill_blockchain_ids.py
+
+      - name: Extract crypto addresses
+        run: python pipeline/extract_addresses.py
 
       - name: Commit updated data
         run: |
