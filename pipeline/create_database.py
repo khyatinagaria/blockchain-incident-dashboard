@@ -7,6 +7,17 @@ import hashlib
 DB_PATH = "data/ReportedCases_web3isgoinggreat.db"
 
 
+def to_json_array(value):
+    """Convert comma-separated string to JSON array.
+    e.g. 'Hack or scam, Bug' → '["Hack or scam", "Bug"]'
+    Empty or nan → '[]'
+    """
+    if not value or str(value).strip() in ("", "nan", "none", "None"):
+        return "[]"
+    items = [item.strip() for item in str(value).split(",") if item.strip()]
+    return json.dumps(items)
+
+
 def create_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
@@ -19,20 +30,19 @@ def create_db():
             report_id                   TEXT PRIMARY KEY,
             date_of_report              TEXT,
             report_title                TEXT NOT NULL,
-            overall_theme_tags          TEXT,
+            overall_theme_tags          TEXT,  -- JSON array e.g. ["Hack or scam", "Bug"]
             scam_category               TEXT,
-            blockchain                  TEXT,
-            blockchain_id               TEXT,
-            technology_used             TEXT,
+            blockchain                  TEXT,  -- JSON array e.g. ["Ethereum", "BNB Chain"]
+            blockchain_id               TEXT,  -- JSON array e.g. [1, 56]
+            technology_used             TEXT,  -- JSON array e.g. ["DeFi", "NFT"]
             report_description          TEXT,
-            report_related_links        TEXT,
+            report_related_links        TEXT,  -- JSON array of URLs
             report_related_image_link   TEXT,
             report_url                  TEXT,
             report_extraction_timestamp TEXT
         );
     """)
 
-    # Read master.csv directly — already has 1241 clean rows
     df = pd.read_csv("data/master.csv")
     print(f"Reading master.csv: {len(df)} rows")
 
@@ -49,9 +59,13 @@ def create_db():
             skipped += 1
             continue
 
-        # Unique ID: title + url + source_file (handles cross-chain duplicates)
         unique_str = f"{title}|{url}|{source}"
         report_id = hashlib.md5(unique_str.encode()).hexdigest()
+
+        # ── Convert multi-value fields to JSON arrays ──
+        theme_tags = to_json_array(row.get("theme_tags", ""))
+        blockchain = to_json_array(row.get("blockchain", ""))
+        tech = to_json_array(row.get("tech", ""))
 
         try:
             cursor.execute("""
@@ -67,11 +81,11 @@ def create_db():
                 report_id,
                 date,
                 title,
-                str(row.get("theme_tags", "")),
+                theme_tags,   # ["Hack or scam", "Bug"]
                 str(row.get("type_of_malicious_activity", "")),
-                str(row.get("blockchain", "")),
-                "[]",   # blockchain_id — will populate after schema update
-                str(row.get("tech", "")),
+                blockchain,   # ["Ethereum", "BNB Chain"]
+                "[]",         # blockchain_id — filled by fill_blockchain_ids.py
+                tech,         # ["DeFi", "NFT"]
                 str(row.get("description", "")),
                 str(row.get("links", "[]")),
                 str(row.get("image_link", "")),
