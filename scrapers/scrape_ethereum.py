@@ -363,7 +363,7 @@ def main():
             continue
         seen_titles.add(row["report_title"])
         results.append(row)
-
+    # current change
     print(f"Entries collected: {len(results)}")
 
     if not results:
