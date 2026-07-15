@@ -357,11 +357,11 @@ def main():
         row = parse_entry(entry_div)
         if not row:
             continue
-        if not row["title"]:
+        if not row["report_title"]:
             continue
-        if row["title"] in seen_titles:
+        if row["report_title"] in seen_titles:
             continue
-        seen_titles.add(row["title"])
+        seen_titles.add(row["report_title"])
         results.append(row)
 
     print(f"Entries collected: {len(results)}")

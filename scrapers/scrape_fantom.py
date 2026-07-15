@@ -357,11 +357,11 @@ def main():
         row = parse_entry(entry_div)
         if not row:
             continue
-        if not row["title"]:
+        if not row["report_title"]:
             continue
-        if row["title"] in seen_titles:
+        if row["report_title"] in seen_titles:
             continue
-        seen_titles.add(row["title"])
+        seen_titles.add(row["report_title"])
         results.append(row)
 
     print(f"Entries collected: {len(results)}")
@@ -386,10 +386,10 @@ def main():
     print(f"\nSaved \u2192 {output_file}  ({len(results)} rows)")
     print("\nEntries saved:")
     for r in results:
-        print(f"  {r['date']}  {r['title'][:70]}")
-        print(f"    theme_tags: {r['theme_tags']}")
-        print(f"    image_link: {r['image_link']}")
-        print(f"    links: {r['links'][:100]}")
+        print(f"  {r['date_of_report']}  {r['report_title'][:70]}")
+        print(f"    theme_tags: {r['overall_theme_tags']}")
+        print(f"    image_link: {r['report_related_image_link']}")
+        print(f"    links: {r['report_related_links'][:100]}")
 
 
 BLOCKCHAIN_IDS = {
