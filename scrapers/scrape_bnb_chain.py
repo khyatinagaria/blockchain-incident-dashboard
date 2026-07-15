@@ -386,7 +386,7 @@ def main():
     print(f"\nSaved \u2192 {output_file}  ({len(results)} rows)")
     print("\nEntries saved:")
     for r in results:
-        print(f"  {r['date']}  {r['title'][:70]}")
+        print(f"  {r['date_of_report']}  {r['report_title'][:70]}")
         print(f"    theme_tags: {r['theme_tags']}")
         print(f"    image_link: {r['image_link']}")
         print(f"    links: {r['links'][:100]}")
