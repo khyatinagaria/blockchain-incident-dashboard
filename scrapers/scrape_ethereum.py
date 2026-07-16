@@ -263,7 +263,7 @@ def parse_entry(entry_div):
 
     # Footer tags
     footer = entry_div.select_one("div.entry-footer")
-    theme_tags, blockchain, tech = parse_footer_tags(footer)
+    theme_tags, blockchain_tag, tech = parse_footer_tags(footer)
 
     return {
         "date_of_report":              date_obj.isoformat() if date_obj else "",
@@ -271,7 +271,6 @@ def parse_entry(entry_div):
         "overall_theme_tags":          theme_tags,
         "scam_category":               classify_attack_type(title, description, theme_tags),
         "blockchain":                  blockchain,
-        # new function
         "blockchain_id":               get_blockchain_id(blockchain),
         "technology_used":             tech,
         "report_description":          description,
