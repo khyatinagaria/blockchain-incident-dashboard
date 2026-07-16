@@ -265,7 +265,7 @@ def parse_entry(entry_div):
 
     # Footer tags
     footer = entry_div.select_one("div.entry-footer")
-    theme_tags, blockchain_tag, tech = parse_footer_tags(footer)
+    theme_tags, blockchain, tech = parse_footer_tags(footer)
 
     return {
         "date_of_report":              date_obj.isoformat() if date_obj else "",
