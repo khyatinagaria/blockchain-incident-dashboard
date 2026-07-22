@@ -370,7 +370,7 @@ def main():
         print("No entries collected.")
         return
 
-    output_file = "monero.csv"
+    output_file = "data/monero.csv"
     fieldnames = [
         "date_of_report", "report_title", "overall_theme_tags", "scam_category",
         "blockchain", "blockchain_id", "technology_used", "report_description",

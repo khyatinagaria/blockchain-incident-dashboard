@@ -390,7 +390,7 @@ def main():
         print("No entries collected.")
         return
 
-    output_file = "avalanche.csv"
+    output_file = "data/avalanche.csv"
     fieldnames = [
         "date_of_report", "report_title", "overall_theme_tags", "scam_category",
         "blockchain", "blockchain_id", "technology_used", "report_description",
