@@ -9,7 +9,23 @@ def merge_all():
     for f in files:
         blockchain_name = os.path.basename(f).replace(".csv", "")
         df = pd.read_csv(f)
-        df["source_file"] = blockchain_name  # safety column
+        df["source_file"] = blockchain_name
+
+        # Normalize column names — handle both old and new scraper output
+        if "report_title" in df.columns:
+            df = df.rename(columns={
+                "report_title":                "title",
+                "overall_theme_tags":          "theme_tags",
+                "technology_used":             "tech",
+                "date_of_report":              "date",
+                "scam_category":               "type_of_malicious_activity",
+                "report_url":                  "article_url",
+                "report_description":          "description",
+                "report_related_links":        "links",
+                "report_related_image_link":   "image_link",
+                "report_extraction_timestamp": "extraction_timestamp",
+            })
+
         dfs.append(df)
 
     master = pd.concat(dfs, ignore_index=True)
