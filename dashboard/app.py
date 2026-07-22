@@ -9,13 +9,22 @@ st.set_page_config(page_title="Blockchain Incident Dashboard",
 @st.cache_data
 def load_data():
     df = pd.read_csv("data/master.csv")
+    # Handle both old and new column names
+    if "report_title" in df.columns:
+        df = df.rename(columns={
+            "report_title": "title",
+            "overall_theme_tags": "theme_tags",
+            "technology_used": "tech",
+            "date_of_report": "date",
+            "scam_category": "type_of_malicious_activity",
+            "report_url": "article_url",
+        })
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df = df[df["source_file"] != "master"]
     df = df.reset_index(drop=True)
-    df["type_of_malicious_activity"] = df["type_of_malicious_activity"].fillna(
-        "Non-security incident")
+    df["type_of_malicious_activity"] = df["type_of_malicious_activity"].fillna("Non-security incident")
     df["type_of_malicious_activity"] = df["type_of_malicious_activity"].replace(
-        "Unclear from text \u2014 review manually", "Hack"  # ← ADD THIS
+        "Unclear from text \u2014 review manually", "Hack"
     )
     return df
 
